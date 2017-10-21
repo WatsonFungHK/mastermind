@@ -1,0 +1,22 @@
+{
+  "name": "mastermind",
+  "version": "1.0.0",
+  "description": "I want to create a web for playing mastermind which even allows multiple players for competition, and which is mobile responsive. It requires jQuery and even socket.io, for interactive web design and synchronisation respectively. It may take 2 days to complete the single player part. After it, I will move to construct game room feature.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/WatsonFungHK/mastermind.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/WatsonFungHK/mastermind/issues"
+  },
+  "homepage": "https://github.com/WatsonFungHK/mastermind#readme",
+  "dependencies": {
+    "express": "^4.16.2"
+  }
+}
