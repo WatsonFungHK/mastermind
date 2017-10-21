@@ -1,0 +1,1 @@
+I want to create a web for playing mastermind which even allows multiple players for competition, and which is mobile responsive. It requires jQuery and even socket.io, for interactive web design and synchronisation respectively. It may take 2 days to complete the single player part. After it, I will move to construct game room feature.
