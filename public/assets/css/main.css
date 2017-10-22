@@ -1,0 +1,26 @@
+body {
+	display: flex;
+	justify-content: center;
+}
+
+/* #rowContainer{
+	
+} */
+.row {
+	display: flex; 
+	justify-content: center; 
+	align-items: center;
+}
+.box {
+	border: solid 5px;
+	background-color: white;
+	width: 40px;
+	height: 40px;
+	margin: 13px;
+}
+
+#checkBox {
+	display: flex;
+	float: right;
+	background-color: #ff6a6a; 
+}

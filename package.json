@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/WatsonFungHK/mastermind#readme",
   "dependencies": {
-    "express": "^4.16.2"
+    "express": "^4.16.2",
+    "randomcolor": "^0.5.3"
   }
 }
