@@ -21,21 +21,22 @@ function addRows(rows){
 	var rowsHTML
 	for (var i = 0; i < rows; i++){
 		rowsHTML = '<div class=row>';
-		for(var j = 0; j < 4; j++){
-			rowsHTML += `<span class="box enable row${i+1}" id="row${i+1}box${j+1}"></span>`;
+		for(var j = 0; j < pegs; j++){
+			rowsHTML += `<span class="box enable row${i}" id="row${i}box${j}"></span>`;
 		}
-		rowsHTML += `<button class=submitBtn id=row${i+1}>Check</button> </div>`
+		rowsHTML += `<div id=row${i}btnContainer style="width: 40px;heigth: 40px"><button class=submitBtn id=row${i}>Check</button> </div></div>`
 		$('#rowContainer').append(rowsHTML)
 	}
 }
 
 function generateCodePegs(){
-	var rowsHTML = '<div class=row>';
+	var rowsHTML = `<div class="row"`;
 	for (var i = 0; i < pegs; i++){
-		rowsHTML += `<span class="box codePeg" color=${randColor()} id="codePegBox${i+1}"></span>`
+		rowsHTML += `<span class="box codePeg" color=${randColor()} id="codePegBox${i}"></span>`
 	}
 	rowsHTML += '</div>'
 	$('#codePegsContainer').append(rowsHTML)
+	$('#codePegsContainer').hide()
 	setColorForCodePegs()
 }
 
@@ -47,7 +48,7 @@ function randColor(){
 
 function setColorForCodePegs(){
 	for (var i = 0; i < pegs; i++){
-		$(`#codePegBox${i+1}`).css("background-color", $(`#codePegBox${i+1}`).attr('color'))
+		$(`#codePegBox${i}`).css("background-color", $(`#codePegBox${i}`).attr('color'))
 	}
 }
 
@@ -69,41 +70,51 @@ $(function boxChangeColor(){
 // 3: winning status
 // checkingColorMatch
 $('.submitBtn').on('click', function(){
-	var row = $(this).attr('id')
-	checkingColorMatchOf(row)
+	var rowID = $(this).attr('id')
+	checkingColorMatchOf(rowID)
 })
 
-function checkingColorMatchOf(row){
+function checkingColorMatchOf(rowID){
 	var corrColorAndPos = 0
 	var corrColorOnly = 0
 	var submittedRow = []
-	var codePegs = [];
+	var codePegs = []
+	var submittedRowLeft = []
+	var codePegsLeft = [];
 	for (var i = 0; i < pegs; i++){
-		submittedRow.push($(`#${row}box${i}`).css("background-color"))
-		codePegs.push($(`#codePegBox${i}`).css("background-color"))
+		submittedRow.push(rgb2colorName($(`#${rowID}box${i}`).css("background-color")))
+		codePegs.push(rgb2colorName($(`#codePegBox${i}`).css("background-color")))
 	}
-	console.log(submittedRow + codePegs)
+
 	for (var i = 0; i < pegs; i++){
 		if(submittedRow[i] == codePegs[i]){
 			corrColorAndPos += 1
-			submittedRow.shift()
-			codePegs.shift()
+		}else{
+			submittedRowLeft.push(submittedRow[i])
+			codePegsLeft.push(codePegs[i])
 		}
 	}
-	var boxesLeft = submittedRow.length
-	for (var i = 0; i < boxesLeft; i++){
-		if (codePegs.indexOf(submittedRow[i]) == submittedRow.indexOf(submittedRow[i])){
+	// console.log('submittedRowLeft: ' + submittedRowLeft + ' | codePegsLeft: ' + codePegsLeft)
+
+	for (var i = 0; i < submittedRowLeft.length; i++){
+		var index = codePegsLeft.indexOf(submittedRowLeft[i])
+		if (index > -1){
 			corrColorOnly += 1
-			submittedRow.shift()
-			codePegs.shift()
+			codePegsLeft.splice(index, 1)
 		}
 	}
-	console.log(submittedRow + codePegs)
-	console.log('corrColorAndPos:' + corrColorAndPos + ' corrColorOnly: ' + corrColorOnly)
-	winning(corrColorAndPos)
+
+	// console.log('submittedRowLeft: ' + submittedRowLeft + ' | codePegsLeft: ' + codePegsLeft)
+	// console.log('corrColorAndPos:' + corrColorAndPos + ' corrColorOnly: ' + corrColorOnly)
+	winningStatus(corrColorAndPos, corrColorOnly, rowID)
 }
 
-function winning(corrColorAndPos){
-	if (corrColorAndPos == 4)
-		alert ('You win!')
+function winningStatus(corrColorAndPos, corrColorOnly, rowID){
+	if (corrColorAndPos == pegs){
+		alert('You win!')
+		$('#codePegsContainer').modal()
+	}else{
+		alert('fullly correct guess is ' + corrColorAndPos + ' and halfly correct guess is ' + corrColorOnly)
+		$(`#${rowID}btnContainer`).html(`<strong>${corrColorAndPos}</strong> | <strong>${corrColorOnly}</strong> `)
+	}
 }
