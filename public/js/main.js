@@ -114,7 +114,8 @@ function winningStatus(corrColorAndPos, corrColorOnly, rowID){
 		alert('You win!')
 		$('#codePegsContainer').modal()
 	}else{
-		alert('fullly correct guess is ' + corrColorAndPos + ' and halfly correct guess is ' + corrColorOnly)
+		alert('Correct Color on corret position: ' + corrColorAndPos + ' | correct color on wrong position: ' + corrColorOnly)
 		$(`#${rowID}btnContainer`).html(`<strong>${corrColorAndPos}</strong> | <strong>${corrColorOnly}</strong> `)
 	}
 }
+
