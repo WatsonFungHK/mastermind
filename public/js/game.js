@@ -67,8 +67,59 @@ const game = {
 			$('#'+boxId).css("background-color", newColor)
 		})
 
-		
-	}	
+		game.check()
+	},
+
+	check: () => {
+		// check answer
+		$('.submitBtn').on('click', function() {
+			var rowID = $(this).attr('id')
+			game.checkingColorMatchOf(rowID)
+		})
+	},
+
+	checkingColorMatchOf: (rowID) => {
+		var corrColorAndPos = 0
+		var corrColorOnly = 0
+		var submittedRow = []
+		var codePegs = []
+		var submittedRowLeft = []
+		var codePegsLeft = [];
+		for (var i = 0; i < pegs; i++) {
+			submittedRow.push(rgb2colorName($(`#${rowID}box${i}`).css("background-color")))
+			codePegs.push(rgb2colorName($(`#codePegBox${i}`).css("background-color")))
+		}
+
+		for (var i = 0; i < pegs; i++) {
+			if(submittedRow[i] == codePegs[i]) {
+				corrColorAndPos += 1
+			}else{
+				submittedRowLeft.push(submittedRow[i])
+				codePegsLeft.push(codePegs[i])
+			}
+		}
+
+		for (var i = 0; i < submittedRowLeft.length; i++) {
+			var index = codePegsLeft.indexOf(submittedRowLeft[i])
+			if (index > -1) {
+				corrColorOnly += 1
+				codePegsLeft.splice(index, 1)
+			}
+		}
+		game.checkWinningStatus(corrColorAndPos, corrColorOnly, rowID)
+	},
+
+	checkWinningStatus: (corrColorAndPos, corrColorOnly, rowID) => {
+		console.log('checkWinningStatus is called')
+		if (corrColorAndPos == pegs) {
+			alert('You win!')
+			$('#codePegsContainer').modal()
+		} else {
+			alert('Correct Color on corret position: ' + corrColorAndPos + ' | correct color on wrong position: ' + corrColorOnly)
+			$(`#${rowID}btnContainer`).html(`<strong>${corrColorAndPos}</strong> | <strong>${corrColorOnly}</strong> `)
+		}
+	}
+
 
 };
 
