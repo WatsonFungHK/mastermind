@@ -10,10 +10,9 @@ const gameDifficulty = {
 const pegs = 4;
 
 const game = {
-
-
 	start: (difficulty) => {
 		game.generateCodePegs()
+		game.UIsetup(difficulty || gameDifficulty.isChallenge)
 		game.addRows(difficulty || gameDifficulty.isChallenge)
 		game.play()
 	},
@@ -31,9 +30,15 @@ const game = {
 		game.setColorForCodePegs()
 	},
 
+	UIsetup: (difficulty) => {
+		game.addRows(difficulty)
+		game.addResetButton()
+	},
+
 	addRows: (difficulty) => {
 		var rowsHTML
 		var rows = difficulty
+		$('#rowContainer').html('')
 		for (var i = 0; i < rows; i++){
 			rowsHTML = '<div class=row>';
 			for(var j = 0; j < pegs; j++){
@@ -42,6 +47,14 @@ const game = {
 			rowsHTML += `<div id=row${i}btnContainer style="width: 40px;heigth: 40px"><button class=submitBtn id=row${i}>Check</button> </div></div>`
 			$('#rowContainer').append(rowsHTML)
 		}
+	},
+
+	addResetButton: () => {
+
+		$('#resetContainer').html(`<button id='reset'>Reset</button>`)
+		$('#reset').on('click', function() {
+			game.restart()
+		})
 	},
 
 	randColor: () => {
