@@ -42,7 +42,15 @@ const game = {
 		$('#instruction').html('')
 		var html = `<div>`
 		colorSet.forEach((color) => {
-			html += `<div class="box" style="background-color: ${color}" draggable="true"> </div>`
+			html += 
+				`<div 
+					color="${color}"
+					class="box" 
+					style="background-color: ${color}" 
+					draggable="true"
+					ondragstart="drag(event)"
+				>
+				</div>`
 		})
 		html += `</div>`
 		$('#instruction').append(html)
@@ -55,7 +63,16 @@ const game = {
 		for (var i = 0; i < rows; i++){
 			rowsHTML = '<div class=row>';
 			for(var j = 0; j < pegs; j++){
-				rowsHTML += `<span class="box row${i} enable" id="row${i}box${j}"></span>`;
+				rowsHTML += 
+					`<span 
+						class="box 
+						row${i} enable" 
+						id="row${i}box${j}" 
+						ondrop="drop(event)"
+						ondragover="allowDrop(event)"
+						clicked=false
+					>
+					</span>`;
 			}
 			rowsHTML += 
 				`	<div id=row${i}btnContainer style="width: 40px;heigth: 40px">
@@ -85,27 +102,49 @@ const game = {
 	},
 
 	activateGameControl:  () => {
-		game.boxChangeColor()
+		game.boxChangeColorOnClick()
 		game.check()
 		game.restart()
 		
 	},
 
-	boxChangeColor: () => {
+	boxChangeColorOnClick: () => {
 		$(".enable").on('click', function() {
-			var boxId = $(this).attr('id')
-			var currColor = colorSet.indexOf(rgb2hex($('#'+boxId).css("background-color")))
-			var newColor = colorSet[(currColor + 1 ) % colorSet.length]
-			$('#'+boxId).css("background-color", newColor)
+			$(this).attr('clicked', true)
+			var that = this
+			game.boxChangeColor(that)
 		})
+	},
+
+	boxChangeColorAfterDrop: () => {
+
+	},
+
+	boxChangeColor: (that) => {
+		var boxId = $(that).attr('id')
+		var currColor = colorSet.indexOf(rgb2hex($('#'+boxId).css("background-color")))
+		var newColor = colorSet[(currColor + 1 ) % colorSet.length]
+		$('#'+boxId).css("background-color", newColor)
 	},
 
 	check: () => {
 		$('.submitBtn').on('click', function() {
 			var rowID = $(this).attr('id')
-			game.checkingColorMatchOf(rowID)
-			game.disableRow(rowID)
+			if (game.isValidSubmit(rowID)) {
+				game.checkingColorMatchOf(rowID)
+				game.disableRow(rowID)
+			}
 		})
+	},
+
+	isValidSubmit: (rowID) => {
+		for (var i = 0; i < pegs; i++) {
+			console.log(`#${rowID}box${i}`)
+			var noColor = $(`#${rowID}box${i}`).css("background-color") == 'rgb(255, 255, 255)'
+			if (noColor) 
+				return false
+		}
+		return true
 	},
 
 	disableRow: (rowID) => {
