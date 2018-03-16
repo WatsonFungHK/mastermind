@@ -17,11 +17,6 @@ const game = {
 		game.generateCodePegs()
 		game.UIsetup(difficulty || gameDifficulty.isChallenge)
 		game.activateGameControl()
-		$('#anwser').on('click', () => {
-			
-			console.log(game.answer)
-			$('#codePegsContainer').modal('toggle')
-		})
 	},
 
 	restart: () => game.start(gameDifficulty.isChallenge),
@@ -39,7 +34,18 @@ const game = {
 	},
 
 	UIsetup: (difficulty) => {
+		game.buildInstruction()
 		game.addRows(difficulty)
+	},
+
+	buildInstruction: () => {
+		$('#instruction').html('')
+		var html = `<div>`
+		colorSet.forEach((color) => {
+			html += `<div class="box" style="background-color: ${color}" draggable="true"> </div>`
+		})
+		html += `</div>`
+		$('#instruction').append(html)
 	},
 
 	addRows: (difficulty) => {
