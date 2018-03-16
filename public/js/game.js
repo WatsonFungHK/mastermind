@@ -13,8 +13,7 @@ const game = {
 	start: (difficulty) => {
 		game.generateCodePegs()
 		game.UIsetup(difficulty || gameDifficulty.isChallenge)
-		game.addRows(difficulty || gameDifficulty.isChallenge)
-		game.play()
+		game.activateGameControl()
 	},
 
 	restart: () => game.start(gameDifficulty.isChallenge),
@@ -60,8 +59,8 @@ const game = {
 		}
 	},
 
-	play:  () => {
-		game.boxChangeColorOnClick()		
+	activateGameControl:  () => {
+		game.boxChangeColorOnClick()
 		game.check()
 		game.restart()
 		
