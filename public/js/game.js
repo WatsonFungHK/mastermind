@@ -10,10 +10,18 @@ const gameDifficulty = {
 const pegs = 4;
 
 const game = {
+	// rows: [],
+	anwser: ['colorhex * pegs'],
+
 	start: (difficulty) => {
 		game.generateCodePegs()
 		game.UIsetup(difficulty || gameDifficulty.isChallenge)
 		game.activateGameControl()
+		$('#anwser').on('click', () => {
+			
+			console.log(game.answer)
+			$('#codePegsContainer').modal('toggle')
+		})
 	},
 
 	restart: () => game.start(gameDifficulty.isChallenge),
@@ -26,6 +34,7 @@ const game = {
 		rowsHTML += '</div>'
 		$('#codePegsContainer').append(rowsHTML)
 		$('#codePegsContainer').hide()
+		game.answer = game.randColor(times = 4)
 		game.setColorForCodePegs()
 	},
 
@@ -40,17 +49,27 @@ const game = {
 		for (var i = 0; i < rows; i++){
 			rowsHTML = '<div class=row>';
 			for(var j = 0; j < pegs; j++){
-				rowsHTML += `<span class="box enable row${i}" id="row${i}box${j}"></span>`;
+				rowsHTML += `<span class="box row${i} enable" id="row${i}box${j}"></span>`;
 			}
-			rowsHTML += `<div id=row${i}btnContainer style="width: 40px;heigth: 40px"><button class=submitBtn id=row${i}>Check</button> </div></div>`
+			rowsHTML += 
+				`	<div id=row${i}btnContainer style="width: 40px;heigth: 40px">
+						<button class=submitBtn id=row${i}>
+							Check
+						</button>
+					</div>
+				</div>`
 			$('#rowContainer').append(rowsHTML)
 		}
 	},
 
-	randColor: () => {
-		var hexCode = Math.floor(Math.random() * colorSet.length)
-		if (!colorSet[hexCode]) throw new Error ('cannot generate color for code pegs')
-		return colorSet[hexCode]
+	randColor: (times) => {
+		var res = []
+		for (var i = 0; i < times; i++) {
+			var hexCode = Math.floor(Math.random() * colorSet.length)
+			if (!colorSet[hexCode]) throw new Error ('cannot generate color for code pegs')
+			res.push(colorSet[hexCode])
+		}
+		return res
 	},
 
 	setColorForCodePegs: () => {
@@ -60,14 +79,14 @@ const game = {
 	},
 
 	activateGameControl:  () => {
-		game.boxChangeColorOnClick()
+		game.boxChangeColor()
 		game.check()
 		game.restart()
 		
 	},
 
-	boxChangeColorOnClick: () => {
-		$(".enable").click( function() {
+	boxChangeColor: () => {
+		$(".enable").on('click', function() {
 			var boxId = $(this).attr('id')
 			var currColor = colorSet.indexOf(rgb2hex($('#'+boxId).css("background-color")))
 			var newColor = colorSet[(currColor + 1 ) % colorSet.length]
@@ -93,30 +112,29 @@ const game = {
 
 	restart: () => {
 		$('#reset').on('click', function() {
-			game.restart()
+			game.start()
 		})
 	},
 
 	checkingColorMatchOf: (rowID) => {
 		if (!rowID)
 			throw new Error('checkingColorMatchOf does not receive row id')
-		var corrColorAndPos = 0
+		var correctColorOnCorrectPosition = 0
 		var corrColorOnly = 0
 		var submittedRow = []
-		var codePegs = []
+		// fetch submission
+		for (var i = 0; i < pegs; i++) {
+			submittedRow.push(rgb2hex($(`#${rowID}box${i}`).css("background-color")))
+		}
+
 		var submittedRowLeft = []
 		var codePegsLeft = [];
 		for (var i = 0; i < pegs; i++) {
-			submittedRow.push(rgb2colorName($(`#${rowID}box${i}`).css("background-color")))
-			codePegs.push(rgb2colorName($(`#codePegBox${i}`).css("background-color")))
-		}
-
-		for (var i = 0; i < pegs; i++) {
-			if(submittedRow[i] == codePegs[i]) {
-				corrColorAndPos += 1
+			if(submittedRow[i] == game.answer[i]) {
+				correctColorOnCorrectPosition += 1
 			}else{
 				submittedRowLeft.push(submittedRow[i])
-				codePegsLeft.push(codePegs[i])
+				codePegsLeft.push(game.answer[i])
 			}
 		}
 
@@ -127,19 +145,18 @@ const game = {
 				codePegsLeft.splice(index, 1)
 			}
 		}
-		game.checkWinningStatus(corrColorAndPos, corrColorOnly, rowID)
+		game.checkWinningStatus(correctColorOnCorrectPosition, corrColorOnly, rowID)
 	},
 
-	checkWinningStatus: (corrColorAndPos, corrColorOnly, rowID) => {
-		if (isNaN(corrColorAndPos) || isNaN(corrColorOnly))
+	checkWinningStatus: (correctColorOnCorrectPosition, corrColorOnly, rowID) => {
+		if (isNaN(correctColorOnCorrectPosition) || isNaN(corrColorOnly))
 			throw new Error ('checkWinningStatus does not receive number-typed checked result')
-		// if ( \row[1-9]\.)
-		if (corrColorAndPos == pegs) {
+		if (correctColorOnCorrectPosition == pegs) {
 			alert('You win!')
-			$('#codePegsContainer').modal()
+			$('#codePegsContainer').modal('show')
 		} else {
-			alert('Correct Color on corret position: ' + corrColorAndPos + ' | correct color on wrong position: ' + corrColorOnly)
-			$(`#${rowID}btnContainer`).html(`<strong>${corrColorAndPos}</strong> | <strong>${corrColorOnly}</strong> `)
+			alert('Correct Color on corret position: ' + correctColorOnCorrectPosition + ' | correct color on wrong position: ' + corrColorOnly)
+			$(`#${rowID}btnContainer`).html(`<strong>${correctColorOnCorrectPosition}</strong> | <strong>${corrColorOnly}</strong> `)
 		}
 	}
 
