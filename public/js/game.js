@@ -32,7 +32,6 @@ const game = {
 
 	UIsetup: (difficulty) => {
 		game.addRows(difficulty)
-		game.addResetButton()
 	},
 
 	addRows: (difficulty) => {
@@ -49,14 +48,6 @@ const game = {
 		}
 	},
 
-	addResetButton: () => {
-
-		$('#resetContainer').html(`<button id='reset'>Reset</button>`)
-		$('#reset').on('click', function() {
-			game.restart()
-		})
-	},
-
 	randColor: () => {
 		var hexCode = Math.floor(Math.random() * colorSet.length)
 		if (!colorSet[hexCode]) throw new Error ('cannot generate color for code pegs')
@@ -70,28 +61,46 @@ const game = {
 	},
 
 	play:  () => {
-		// box change color on click
-		$(".box.enable").click( function() {
+		game.boxChangeColorOnClick()		
+		game.check()
+		game.restart()
+		
+	},
+
+	boxChangeColorOnClick: () => {
+		$(".enable").click( function() {
 			var boxId = $(this).attr('id')
 			var currColor = colorSet.indexOf(rgb2hex($('#'+boxId).css("background-color")))
-			// if (!currColor) console.log("failed to access current color of "+boxId );
 			var newColor = colorSet[(currColor + 1 ) % colorSet.length]
-			// if (!newColor) console.log("failed to get next color");
 			$('#'+boxId).css("background-color", newColor)
 		})
-
-		game.check()
 	},
 
 	check: () => {
-		// check answer
 		$('.submitBtn').on('click', function() {
 			var rowID = $(this).attr('id')
 			game.checkingColorMatchOf(rowID)
+			game.disableRow(rowID)
+		})
+	},
+
+	disableRow: (rowID) => {
+		if (!rowID) 
+			throw new Error('disableRow does not receive row id')
+		$(`.${rowID}`)
+			.removeClass('enable')
+			.addClass('disable')
+	},
+
+	restart: () => {
+		$('#reset').on('click', function() {
+			game.restart()
 		})
 	},
 
 	checkingColorMatchOf: (rowID) => {
+		if (!rowID)
+			throw new Error('checkingColorMatchOf does not receive row id')
 		var corrColorAndPos = 0
 		var corrColorOnly = 0
 		var submittedRow = []
@@ -123,7 +132,9 @@ const game = {
 	},
 
 	checkWinningStatus: (corrColorAndPos, corrColorOnly, rowID) => {
-		console.log('checkWinningStatus is called')
+		if (isNaN(corrColorAndPos) || isNaN(corrColorOnly))
+			throw new Error ('checkWinningStatus does not receive number-typed checked result')
+		// if ( \row[1-9]\.)
 		if (corrColorAndPos == pegs) {
 			alert('You win!')
 			$('#codePegsContainer').modal()
