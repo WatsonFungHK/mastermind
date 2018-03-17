@@ -57,13 +57,13 @@ const game = {
 	},
 
 	addRows: (difficulty) => {
-		var rowsHTML
-		var rows = difficulty
 		$('#rowContainer').html('')
+		var html
+		var rows = difficulty
 		for (var i = 0; i < rows; i++){
-			rowsHTML = '<div class=row>';
+			html = '<div class=row>';
 			for(var j = 0; j < pegs; j++){
-				rowsHTML += 
+				html += 
 					`<span 
 						class="box 
 						row${i} enable" 
@@ -73,14 +73,14 @@ const game = {
 					>
 					</span>`;
 			}
-			rowsHTML += 
+			html += 
 				`	<div id=row${i}btnContainer style="width: 40px;heigth: 40px">
 						<button class=submitBtn id=row${i}>
 							Check
 						</button>
 					</div>
 				</div>`
-			$('#rowContainer').append(rowsHTML)
+			$('#rowContainer').append(html)
 		}
 	},
 
@@ -133,8 +133,7 @@ const game = {
 
 	isValidSubmit: (rowID) => {
 		for (var i = 0; i < pegs; i++) {
-			var boxNoColor = 
-				$(`#${rowID}box${i}`).css("background-color") == 'rgb(255, 255, 255)' // the latter is white's rgb
+			var boxNoColor = $(`#${rowID}box${i}`).css("background-color") == 'rgb(255, 255, 255)' // the latter is white's rgb
 			if (boxNoColor) {
 				alert('Please choose color for each box')
 				return false
