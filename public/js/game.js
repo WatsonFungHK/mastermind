@@ -48,7 +48,7 @@ const game = {
 					class="box" 
 					style="background-color: ${color}" 
 					draggable="true"
-					ondragstart="drag(event)"
+					ondragstart="dragColor(event)"
 				>
 				</div>`
 		})
@@ -68,9 +68,8 @@ const game = {
 						class="box 
 						row${i} enable" 
 						id="row${i}box${j}" 
-						ondrop="drop(event)"
+						ondrop="dropColor(event)"
 						ondragover="allowDrop(event)"
-						clicked=false
 					>
 					</span>`;
 			}
@@ -110,14 +109,9 @@ const game = {
 
 	boxChangeColorOnClick: () => {
 		$(".enable").on('click', function() {
-			$(this).attr('clicked', true)
 			var that = this
 			game.boxChangeColor(that)
 		})
-	},
-
-	boxChangeColorAfterDrop: () => {
-
 	},
 
 	boxChangeColor: (that) => {
@@ -139,10 +133,12 @@ const game = {
 
 	isValidSubmit: (rowID) => {
 		for (var i = 0; i < pegs; i++) {
-			console.log(`#${rowID}box${i}`)
-			var noColor = $(`#${rowID}box${i}`).css("background-color") == 'rgb(255, 255, 255)'
-			if (noColor) 
+			var boxNoColor = 
+				$(`#${rowID}box${i}`).css("background-color") == 'rgb(255, 255, 255)' // the latter is white's rgb
+			if (boxNoColor) {
+				alert('Please choose color for each box')
 				return false
+			}
 		}
 		return true
 	},
@@ -209,5 +205,5 @@ const game = {
 };
 
 $(document).ready(() => {
-	game.start(gameDifficulty.isChallenge);
+	game.start(gameDifficulty.isStandard);
 });

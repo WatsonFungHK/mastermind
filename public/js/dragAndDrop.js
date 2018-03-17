@@ -2,12 +2,12 @@ function allowDrop(ev) {
     ev.preventDefault();
 }
 
-function drag(ev) {
+function dragColor(ev) {
 	var color = ev.target.attributes.color.value
 	ev.dataTransfer.setData("color", color);
 }
 
-function drop(ev) {
+function dropColor(ev) {
 	ev.preventDefault();
 	var targetBox = '#' + ev.target.id
     var color = ev.dataTransfer.getData("color");
