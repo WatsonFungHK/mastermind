@@ -1,6 +1,6 @@
-body {
-	 display: flex; 
-
+#board {
+	display: flex;
+	justify-content: center;
 }
 
  #rowContainer {
@@ -9,6 +9,11 @@ body {
 	flex-direction: row; 
 	margin: 3em;
 } 
+
+#instruction {
+	margin-top: 2em;
+	margin-right: 5em;
+}
 
 
 #resetContainer {
