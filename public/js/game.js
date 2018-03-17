@@ -10,7 +10,6 @@ const gameDifficulty = {
 const pegs = 4;
 
 const game = {
-	// rows: [],
 	anwser: ['colorhex * pegs'],
 
 	start: (difficulty) => {
